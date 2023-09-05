@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="project_search_view" model="ir.ui.view">
+        <field name="name">project.search</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_project_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+        
+             
+                <filter string="Proyectos Principales" name="is_special" domain="[('bol_p','=',True)]" />
+            
+            </xpath>
+        </field>
+    </record>
+    <record id="project_search_view12" model="ir.ui.view">
+        <field name="name">project.button</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="bol_p"/> 
+            </xpath>
+            <xpath expr="//span[@t-if='record.partner_id.value']" position="after">
+                <t t-if="record.bol_p.raw_value">
+                    <button type="object" class="btn btn-primary" name="open_child_projects">Sub-proyectos</button>
+                </t>
+            </xpath>
+        </field>
+    </record>
+    <record id="project_search_view123" model="ir.ui.view">
+        <field name="name">project.button</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.project_view_kanban"/>
+        <field name="arch" type="xml">
+      
+            <xpath expr="//div/div" position="after">
+                
+                <button type="object" name="button_view_tasks_in_kanban">Tareas</button>
+               
+            </xpath>
+        </field>
+    </record>
+   
+    <record id="project.action_view_task" model="ir.actions.act_window">
+        <field name="name">Tasks</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">kanban,tree,form,calendar,pivot,graph,activity</field>
+        <field name="context">{}</field>
+        <field name="domain">[('display_project_id', '!=', False)]</field>
+        <field name="search_view_id" ref="project.view_task_search_form"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No tasks found. Let's create one!
+            </p><p>
+                To get things done, use activities and status on tasks.<br/>
+                Chat in real-time or by email to collaborate efficiently.
+            </p>
+        </field>
+    </record>
+    <record id="my_project_view1" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="res_model">project.project</field>
+        <field name="domain">[]</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="project.view_project_kanban"/>
+        <field name="search_view_id" ref="project.view_project_project_filter"/>
+        <field name="target">main</field>
+        <field name="context">{'search_default_is_special': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No projects found. Let's create one!
+            </p><p>
+                Projects regroup tasks on the same topic, and each has its dashboard.
+            </p>
+        </field>
+    </record>
+    <record id="project.menu_main_pm" model="ir.ui.menu">
+        <field name="action" ref="jr_subproject.my_project_view1"/>
+        <!-- Otros campos que desees modificar -->
+    </record>
+        
+    <record id="action_view_child_projects" model="ir.actions.act_window">
+        <field name="name">Proyectos Hijos</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="domain">[('id', 'in', context.get('child_projects_ids', []))]</field>
+    </record>
+</odoo>
