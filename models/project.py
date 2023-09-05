@@ -24,6 +24,7 @@ class ProjectInherit(models.Model):
                 line.bol_p=False
 
     def open_child_projects(self):
+        _logger.info("0000000 "+str(self._context))
         self.ensure_one()
         if self.bol_p:
             child_project_ids = self.sub_project_ids.mapped('p_project_id.id')
@@ -33,10 +34,12 @@ class ProjectInherit(models.Model):
         return True
     
     def button_view_tasks_in_kanban(self):
+        _logger.info("1111111 "+str(self._context))
         self.ensure_one()
         action = self.env.ref('project.action_view_task').read()[0]
         action['domain'] = [('project_id', '=', self.id)]
-      
+        action['context']= {'lang': 'es_DO', 'tz': 'America/Santo_Domingo', 'uid': 2, 'allowed_company_ids': [1], 'params': {'menu_id': 268, 'cids': 1, 'action': 924, 'model': 'project.project', 'view_type': 'kanban'}, 'child_projects_ids': [13]} 
+
         action['views'] = [(self.env.ref('project.view_task_kanban').id, 'kanban')]
         return action
 
