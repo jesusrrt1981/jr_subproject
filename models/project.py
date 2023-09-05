@@ -14,6 +14,7 @@ class ProjectInherit(models.Model):
 
     bol_p=fields.Boolean(compute="_get_bol",store=True)
 
+    @api.depends("name","sub_project_ids")
     def _get_bol(self):
         for line in self:
 
